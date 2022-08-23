@@ -1,22 +1,13 @@
-export function Dater(): {} {
-  const calendar: string[][] | Date[][] = [
+export class Dater extends Date {
+  today = new Date();
+  calendar: Date[][] | string[][] = [
     ['', '', '', '', '', '', ''],
     ['', '', '', '', '', '', ''],
     ['', '', '', '', '', '', ''],
     ['', '', '', '', '', '', ''],
     ['', '', '', '', '', '', ''],
   ];
-  const today = () => {
-    const dateToday = new Date();
-
-    return {
-      date: dateToday,
-      year: dateToday.getFullYear(),
-      month: dateToday.getMonth(),
-      day: dateToday.getDate(),
-    };
-  };
-  const days = [
+  days = [
     'Sunday',
     'Monday',
     'Tuesday',
@@ -25,7 +16,7 @@ export function Dater(): {} {
     'Friday',
     'Saturday',
   ];
-  const months = [
+  months = [
     'January',
     'February',
     'March',
@@ -40,45 +31,57 @@ export function Dater(): {} {
     'December',
   ];
 
-  const firstCalendarDay = () => {
-    return new Date(today().year, today().month, 1);
-  };
-
-  function daysInThisMonth() {
-    return new Date(today().year, today().month, 0).getDate();
+  firstCalendarDay(dateToStart: Date): Date {
+    return new Date(
+      this.getYear(dateToStart),
+      this.getMonthNumber(dateToStart),
+      1
+    );
   }
 
-  const getDayName = (): string => {
-    return days[today().day];
-  };
+  numberOfDaysInMonth(dateToStart: Date): number {
+    return new Date(
+      this.getYear(dateToStart),
+      this.getMonthNumber(dateToStart),
+      0
+    ).getDate();
+  }
 
-  const getDayNumber = (): number => {
-    return today().day;
-  };
+  getDayName(day: Date): string {
+    return this.days[day.getDay()];
+  }
 
-  const getMonthName = (): string => {
-    return months[today().month];
-  };
+  getDayNumber(day: Date): number {
+    return day.getDate();
+  }
 
-  const getMonthNumber = (): number => {
-    return today().month;
-  };
+  getMonthName(day: Date): string {
+    return this.months[day.getMonth()];
+  }
 
-  function initTodayCalendar(): Date[][] | string[][] {
+  getMonthNumber(day: Date): number {
+    return day.getMonth();
+  }
+
+  getYear(day: Date): number {
+    return day.getFullYear();
+  }
+
+  initTodayCalendar(dateToStart: Date): Date[][] | string[][] {
     console.time('initCal');
-    const firstDayOnCalendar: Date = firstCalendarDay();
+    const firstDayOnCalendar: Date = this.firstCalendarDay(dateToStart);
     let dayIndex: number = 0;
     let dayNumber: number = 1;
     let weekIndex: number = 0;
 
-    for (let i = 0; i < daysInThisMonth(); i++) {
+    for (let i = 0; i < this.numberOfDaysInMonth(dateToStart); i++) {
       if (i === 0) {
         dayIndex = 1;
-        calendar[weekIndex][dayIndex] = firstDayOnCalendar;
+        this.calendar[weekIndex][dayIndex] = firstDayOnCalendar;
       } else {
-        calendar[weekIndex][dayIndex] = new Date(
-          today().year,
-          today().month,
+        this.calendar[weekIndex][dayIndex] = new Date(
+          dateToStart.getFullYear(),
+          dateToStart.getMonth(),
           dayNumber
         );
       }
@@ -93,17 +96,6 @@ export function Dater(): {} {
       dayIndex = dayIndex + 1;
     }
     console.timeEnd('initCal');
-    return calendar;
+    return this.calendar;
   }
-
-  return {
-    getDayName,
-    getDayNumber,
-    getMonthName,
-    getMonthNumber,
-    today,
-    days,
-    firstCalendarDay,
-    initTodayCalendar,
-  };
 }

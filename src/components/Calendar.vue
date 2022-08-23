@@ -24,12 +24,12 @@
 import { onMounted, ref } from 'vue';
 import { Dater } from '../helpers/dater';
 const dater = new (Dater as any)();
-
-const dateToday: number = dater.today().day;
+const today = dater.today;
+const dateToday: number = dater.getDayNumber(today);
 const daysArray: object = dater.days;
-const calendar: void = ref(dater.initTodayCalendar());
-
-function checkDayType(day: any) {
+const calendar: void = ref(dater.initTodayCalendar(today));
+console.log('Today: ', today);
+function checkDayType(day: Date): string | string[] {
   let classArray: string[] = [];
 
   new Date(day).getDate() === dateToday ? classArray.push('current') : null;
